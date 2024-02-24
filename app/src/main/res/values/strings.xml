@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Calter</string>
+    <string name="hint_email">Email…</string>
+    <string name="hint_password">Password…</string>
+    <string name="register">REGISTER</string>
+    <string name="login">LOG IN</string>
+    <string name="logoff">LOG OFF</string>
+
 </resources>
