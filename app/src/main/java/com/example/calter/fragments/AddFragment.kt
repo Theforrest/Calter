@@ -141,11 +141,11 @@ class AddFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     binding.tvDefault.visibility = View.INVISIBLE
                     binding.tvCalories.visibility = View.VISIBLE
-                    binding.tvNameIngredient.visibility = View.VISIBLE
+                    binding.tvIngredientName.visibility = View.VISIBLE
                     binding.ivPhoto.visibility = View.VISIBLE
 
                     ingredient = results.ingredients[0]
-                    binding.tvNameIngredient.text= results.ingredients[0].name?.uppercase()
+                    binding.tvIngredientName.text= results.ingredients[0].name?.uppercase()
                     binding.tvCalories.text= results.ingredients[0].calories.toString()
                     Glide.with(binding.ivPhoto.context).load(results.ingredients[0].photo?.highres).into(binding.ivPhoto)
                 }

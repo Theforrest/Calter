@@ -70,6 +70,10 @@ class ListFragment : Fragment() {
             loadAddFragment()
         }
 
+        binding.btnCustom.setOnClickListener {
+            loadCustomFragment()
+        }
+
         auth.uid?.let {uid ->
 
             reference.child(uid).child("2024-04-17").addValueEventListener(object : ValueEventListener {
@@ -100,6 +104,10 @@ class ListFragment : Fragment() {
         listener?.loadFragment(AddFragment(),null)
     }
 
+    private fun loadCustomFragment() {
+
+        listener?.loadFragment(CustomFragment(),null)
+    }
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnFragmentActionListener) listener=context
