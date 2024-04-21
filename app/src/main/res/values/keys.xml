@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="google_id" formatted="false" translatable="false">721960995035-b4vkt8dsmc2j6sj5rs7d488kfcgpm7uv.apps.googleusercontent.com</string>
+    <string name="application_id" formatted="false" translatable="false">c4ceb282</string>
+    <string name="application_key" formatted="false" translatable="false">d1699f06f2c65ed414cfd72102594dfb</string>
 </resources>
