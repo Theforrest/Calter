@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.calter.adapters.IngredientAdapter
+import com.example.calter.databinding.FragmentCustomListBinding
 import com.example.calter.databinding.FragmentListBinding
 import com.example.calter.models.Ingredient
 import com.google.firebase.auth.FirebaseAuth
@@ -31,10 +32,10 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 
-class ListFragment : Fragment() {
+class CustomListFragment : Fragment() {
 
     private var listener: OnFragmentActionListener? = null
-    private lateinit var binding: FragmentListBinding
+    private lateinit var binding: FragmentCustomListBinding
 
     private var adapter = IngredientAdapter(emptyList())
 
@@ -44,14 +45,12 @@ class ListFragment : Fragment() {
     private lateinit var reference: DatabaseReference
     private var referenceListener: ValueEventListener? = null
 
-    private var datePicker = DatePickerFragment {date -> setDate(date)}
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View{
         // Inflate the layout for this fragment
-        binding = FragmentListBinding.inflate(inflater, container, false)
+        binding = FragmentCustomListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -70,36 +69,19 @@ class ListFragment : Fragment() {
     }
     private fun setRecycler() {
         val layoutManager = GridLayoutManager(this.context, 1)
-        binding.rvIngredientList.layoutManager = layoutManager
-        binding.rvIngredientList.adapter = adapter
+        binding.rvIngredientListCustom.layoutManager = layoutManager
+        binding.rvIngredientListCustom.adapter = adapter
     }
 
-    private fun setDate(date: String) {
-        auth.uid?.let {uid ->
-            referenceListener?.let { reference.child(uid).child("dates").child(binding.tvDateList.text.toString()).removeEventListener(it) }
-            binding.tvDateList.text = date
 
-            setReferenceListener(uid, date)
-            adapter.list= emptyList()
-            adapter.notifyDataSetChanged()
-        }
-    }
     private fun setListeners() {
-        binding.btnAdd.setOnClickListener {
-            loadAddFragment()
+        binding.btnAddCustom.setOnClickListener {
+            loadAddCustomFragment()
         }
-        binding.tvDateList.setOnClickListener{
-            datePicker.show(parentFragmentManager, "datePicker")
-
-        }
-
 
         auth.uid?.let {uid ->
-            val time = Calendar.getInstance().time
-            val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val current = formatter.format(time)
-            binding.tvDateList.text = current
-            setReferenceListener(uid, current)
+
+            setReferenceListener(uid)
 
         }
 
@@ -107,14 +89,15 @@ class ListFragment : Fragment() {
     }
 
 
-    private fun setReferenceListener(uid:String, date: String) {
+    private fun setReferenceListener(uid:String) {
 
-        referenceListener = reference.child(uid).child("dates").child(date).addValueEventListener(object : ValueEventListener {
+        referenceListener = reference.child(uid).child("custom").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 val ingredientList: MutableList<Ingredient> = mutableListOf()
 
                 for (postSnapshot in snapshot.children) {
+
                     postSnapshot.getValue(Ingredient::class.java)
                         ?.let { ingredientList.add(it) }
 
@@ -129,11 +112,9 @@ class ListFragment : Fragment() {
         })
     }
 
-    private fun loadAddFragment() {
-        val bundle = Bundle().apply {
-            putString("DATE", binding.tvDateList.text.toString())
-        }
-        listener?.loadFragment(AddFragment(),bundle)
+    private fun loadAddCustomFragment() {
+
+        listener?.loadFragment(CustomFragment(),null)
     }
 
     override fun onAttach(context: Context) {

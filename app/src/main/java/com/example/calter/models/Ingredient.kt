@@ -20,7 +20,7 @@ data class Ingredient(
     @SerializedName("nf_protein") val protein: Double? = -1.0,
     @SerializedName("nf_potassium") val potassium: Double? = -1.0,
     @SerializedName("nf_sodium") val sodium: Double? = -1.0,
-
+    var time: String? = "",
 
     @SerializedName("photo") val photo: Photo? = null,
     ): Serializable

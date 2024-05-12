@@ -1,5 +1,6 @@
 package com.example.calter.adapters
 
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -21,7 +22,7 @@ class IngredientHolder (v: View): RecyclerView.ViewHolder(v) {
         binding.tvSaturatedFat.text = ingredient.saturatedFat.toString()
         binding.tvSodium.text = ingredient.sodium.toString()
         binding.tvSugar.text = ingredient.sugars.toString()
-
+        binding.tvTime.text = ingredient.time.toString()
 
 
     }

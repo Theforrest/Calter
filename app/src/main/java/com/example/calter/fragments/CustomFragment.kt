@@ -1,25 +1,45 @@
 package com.example.calter.fragments
 
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.calter.R
 import com.example.calter.adapters.InputExpandableListAdapter
 import com.example.calter.adapters.SuggestionAdapter
 import com.example.calter.databinding.FragmentAddBinding
 import com.example.calter.databinding.FragmentCustomBinding
 import com.example.calter.models.Ingredient
+import com.example.calter.models.Photo
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import java.util.Date
 import java.util.Locale
 
 
@@ -36,12 +56,15 @@ class CustomFragment : Fragment() {
     private lateinit var et_protein:EditText
     private lateinit var et_potassium:EditText
     private lateinit var et_sodium:EditText
+    private var imageBitmap: Bitmap? = null
 
     private lateinit var editTexts: List<EditText>
 
     private lateinit var adapter: InputExpandableListAdapter
 
     private lateinit var auth: FirebaseAuth
+
+    private var storageRef = FirebaseStorage.getInstance().reference.child("images")
 
     private lateinit var database: FirebaseDatabase
     private lateinit var reference: DatabaseReference
@@ -64,6 +87,7 @@ class CustomFragment : Fragment() {
         setExpandableList()
         setListeners()
         initDb()
+
 
     }
 
@@ -100,8 +124,27 @@ class CustomFragment : Fragment() {
         binding.btnConfirm.setOnClickListener {
             createCustomIngredient()
         }
+        binding.ivPhoto.setOnClickListener {
+            selectImage()
+        }
     }
+    private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            val projection = MediaStore.Images.Media.DATA
+            val cursor = context?.contentResolver?.query(uri, arrayOf(projection), null, null, null)
+            val columnIndex = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor?.moveToFirst()
+            val filePath = columnIndex?.let { cursor.getString(it) }
+            val bitmap = BitmapFactory.decodeFile(filePath)
+            imageBitmap = bitmap
+            binding.ivPhoto.setImageBitmap(bitmap)
+        }
+    }
+    private fun selectImage() {
 
+        getContent.launch("image/*")
+
+    }
     private fun createCustomIngredient() {
         val name = binding.etNameIngredient.text.toString().trim()
         val calories = checkEditText(binding.etCalories.text.toString())
@@ -114,17 +157,39 @@ class CustomFragment : Fragment() {
         val protein = checkEditText(et_protein.text.toString())
         val potassium = checkEditText(et_potassium.text.toString())
         val sodium = checkEditText(et_sodium.text.toString())
-
-        val ingredient = Ingredient(name= name,calories= calories,fat= fat,saturatedFat= saturatedFat,cholesterol= cholesterol,carbohydrates= carbohydrates, fiber= fiber, sugars = sugars, protein = protein, potassium = potassium, sodium = sodium)
+        var image = ""
 
         auth.uid?.let {uid ->
-            reference.child(uid).child("custom").push().setValue(ingredient)
-                .addOnSuccessListener {
-                    Toast.makeText(this.context, "Saved Succesfully", Toast.LENGTH_LONG).show()
-                }
-                .addOnFailureListener() {
-                    Toast.makeText(this.context, "Error Saving", Toast.LENGTH_LONG).show()
-                }
+            imageBitmap?.let {
+                val bitmap = it
+                val baos = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                val data = baos.toByteArray()
+                storageRef.child("${auth.uid}${Date()}").putBytes(data)
+                    .addOnSuccessListener { uploadTask ->
+                        uploadTask.metadata?.reference?.downloadUrl?.addOnSuccessListener {uri->
+
+                            val ingredient = Ingredient(name= name,calories= calories,fat= fat,saturatedFat= saturatedFat,cholesterol= cholesterol,carbohydrates= carbohydrates, fiber= fiber, sugars = sugars, protein = protein, potassium = potassium, sodium = sodium, photo = Photo(uri.toString(), uri.toString()))
+
+
+                            reference.child(uid).child("custom").push().setValue(ingredient)
+                                .addOnSuccessListener {
+
+
+                                    Toast.makeText(this.context, "Saved Succesfully", Toast.LENGTH_LONG).show()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(this.context, "Error Saving", Toast.LENGTH_LONG).show()
+                                }
+                        }
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this.context, "Error Saving", Toast.LENGTH_LONG).show()
+                    }
+
+            }
+
+
         }
     }
 
