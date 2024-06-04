@@ -5,4 +5,7 @@
     <color name="yellow">#faa300</color>
     <color name="primary">#E1AFD1</color>
     <color name="primary_dark">#AD88C6</color>
+    <color name="light_pink">#FFE6E6</color>
+    <color name="dark_purple">#7469B6</color>
+
 </resources>

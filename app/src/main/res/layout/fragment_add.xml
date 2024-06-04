@@ -106,7 +106,7 @@
                 android:id="@+id/tv_default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ni modo, no hay nada"
+                android:text="No ingredient selected"
                 android:textSize="34sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
