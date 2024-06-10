@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/tv_date_list"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="34sp"
@@ -25,6 +25,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:src="@drawable/plus"
+        app:backgroundTint="@color/primary_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -37,5 +38,38 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_date_list" />
+
+    <ImageButton
+        android:id="@+id/btn_datepicker"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/calendar_lines_pen"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_date_list"
+        app:layout_constraintStart_toEndOf="@+id/tv_date_list"
+        app:layout_constraintTop_toTopOf="@+id/tv_date_list" />
+
+    <ImageView
+        android:id="@+id/iv_empty"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/empty"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/rv_ingredient_list"
+        app:layout_constraintTop_toBottomOf="@+id/tv_date_list"
+        app:layout_constraintVertical_bias="0.25" />
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/empty"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/iv_empty"
+        app:layout_constraintStart_toStartOf="@+id/iv_empty"
+        app:layout_constraintTop_toBottomOf="@+id/iv_empty" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

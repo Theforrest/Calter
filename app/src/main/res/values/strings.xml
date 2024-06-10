@@ -5,7 +5,19 @@
     <string name="register">REGISTER</string>
     <string name="login">LOG IN</string>
     <string name="logoff">LOG OFF</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="navigation_drawer_open">Drawer Open</string>
     <string name="navigation_drawer_close">Drawer Closed</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="no_ingredient_selected">No ingredient selected</string>
+    <string name="hint_name">Name…</string>
+    <string name="hint_calories">Calories…</string>
+    <string name="hint_grams">Grams…</string>
+    <string name="hint_units">Units…</string>
+    <string name="grams">Grams: </string>
+    <string name="units">Units: </string>
+    <string name="powered_by">Powered by Nutritionix</string>
+    <string name="empty">Looks like there are no records on this day, press the + button to add a meal</string>
+    <string name="custom_empty">Looks like there are no custom meals stored, press the + button to create a custom meal</string>
+    <string name="default_search">Default %s</string>
+    <string name="custom_search">Custom %s</string>
 </resources>

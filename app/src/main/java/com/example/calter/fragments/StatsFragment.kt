@@ -1,20 +1,27 @@
 package com.example.calter.fragments
 
+import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.Paint
+import android.graphics.Typeface
+import android.graphics.pdf.PdfDocument
+import android.graphics.pdf.PdfDocument.PageInfo
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.os.Bundle
-import android.util.Log
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.DialogFragment
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
-import com.example.calter.adapters.IngredientAdapter
-import com.example.calter.databinding.FragmentListBinding
+import com.example.calter.R
 import com.example.calter.databinding.FragmentStatsBinding
 import com.example.calter.models.Ingredient
 import com.google.firebase.auth.FirebaseAuth
@@ -25,12 +32,9 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.time.LocalDateTime
-import java.time.Year
-import java.time.format.DateTimeFormatter
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.Locale
 
 
@@ -53,6 +57,7 @@ class StatsFragment : Fragment() {
     private var textView: TextView? = null
     var ingredientList: MutableList<Ingredient> = mutableListOf()
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,6 +73,12 @@ class StatsFragment : Fragment() {
         auth = Firebase.auth
         initDb()
         setListeners()
+        if (checkPermission()) {
+            Toast.makeText(context, "ajaja", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(context, "jujuju", Toast.LENGTH_LONG).show()
+
+        }
     }
 
     private fun initDb() {
@@ -87,15 +98,20 @@ class StatsFragment : Fragment() {
     }
     private fun setListeners() {
 
-        binding.tvDateList2.setOnClickListener{
+        binding.btnDatepickerStart.setOnClickListener{
+            val delayMillis: Long = 900
+            it?.isClickable = false
+            it.postDelayed({ it.isClickable = true }, delayMillis)
             textView = binding.tvDateList2
             datePicker.show(parentFragmentManager, "datePicker")
 
 
         }
-        binding.tvDateList3.setOnClickListener{
+        binding.btnDatepickerEnd.setOnClickListener{
+            val delayMillis: Long = 900
+            it?.isClickable = false
+            it.postDelayed({ it.isClickable = true }, delayMillis)
             textView = binding.tvDateList3
-
             datePicker.show(parentFragmentManager, "datePicker")
 
         }
@@ -147,6 +163,9 @@ class StatsFragment : Fragment() {
             }
         }
 
+        binding.btnDownload.setOnClickListener {
+            generatePdf()
+        }
 
         auth.uid?.let {uid ->
             val current = getCurrentDate()
@@ -249,5 +268,49 @@ class StatsFragment : Fragment() {
         binding.tvSodium.text = sodium.toString()
         binding.tvSugar.text = sugars.toString()
 
+    }
+
+    private fun generatePdf() {
+        val pdfDocument = PdfDocument()
+        val pageHeight = 1120
+        val pagewidth = 792
+        val paint = Paint()
+        val title = Paint()
+
+        val mypageInfo = PageInfo.Builder(pagewidth, pageHeight, 1).create()
+
+        val myPage = pdfDocument.startPage(mypageInfo)
+        val canvas = myPage.canvas
+        title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL))
+        title.textSize = 15F
+
+        context?.let { ContextCompat.getColor(it, R.color.dark_purple) }?.let { title.setColor(it) }
+        title.textAlign = Paint.Align.CENTER
+        canvas.drawText("This is sample document which we have created.", 396F, 560F, title)
+        pdfDocument.finishPage(myPage);
+        val file = File(Environment.getExternalStorageDirectory(), "a.pdf")
+
+        try {
+            pdfDocument.writeTo(FileOutputStream(file))
+
+            Toast.makeText(
+                context,
+                "PDF file generated successfully.",
+                Toast.LENGTH_SHORT
+            ).show()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        pdfDocument.close()
+    }
+    private fun checkPermission(): Boolean {
+        // checking of permissions.
+        val permission1 =
+            context?.let { ContextCompat.checkSelfPermission(it,
+                Manifest.permission.MANAGE_EXTERNAL_STORAGE
+            ) }
+
+        return permission1 == PackageManager.PERMISSION_GRANTED
     }
 }

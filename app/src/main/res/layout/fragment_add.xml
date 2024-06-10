@@ -15,34 +15,51 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sv_ingredients" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_default" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_suggestions_custom"
         android:layout_width="0dp"
         android:layout_height="100dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_suggestions" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_custom"
+        tools:visibility="gone" />
 
     <Button
         android:id="@+id/btn_confirm"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="CONFIRM"
+        android:text="@string/confirm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_ingredient_selected"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_confirm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_custom"
+        app:layout_constraintVertical_bias="0.5" />
 
     <SearchView
         android:id="@+id/sv_ingredients"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/light_pink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+    </SearchView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_Ingredient"
@@ -50,15 +67,29 @@
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_suggestions_custom">
+        app:layout_constraintTop_toBottomOf="@+id/rv_suggestions_custom"
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/btn_timepicker"
+                android:layout_width="30dp"
+                android:layout_height="0dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/time"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_time"
+                app:layout_constraintStart_toEndOf="@+id/tv_time"
+                app:layout_constraintTop_toTopOf="@+id/tv_time"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tv_ingredient_name"
@@ -67,7 +98,7 @@
                 android:textAlignment="center"
                 android:textSize="26sp"
                 android:textStyle="bold"
-                android:visibility="invisible"
+                android:visibility="visible"
                 app:layout_constraintBottom_toTopOf="@+id/iv_photo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -77,42 +108,42 @@
 
             <ImageView
                 android:id="@+id/iv_photo"
-                android:layout_width="wrap_content"
+                android:layout_width="300dp"
                 android:layout_height="200dp"
                 android:scaleType="fitXY"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toTopOf="@+id/tv_calories"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_ingredient_name"
                 tools:visibility="visible" />
 
-            <TextView
-                android:id="@+id/tv_calories"
+            <EditText
+                android:id="@+id/et_grams"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:hint="@string/hint_grams"
+                android:inputType="number"
                 android:textSize="20sp"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tv_time"
-                app:layout_constraintHorizontal_bias="0.5"
+                android:visibility="visible"
+                app:layout_constraintBottom_toTopOf="@+id/tv_time"
+                app:layout_constraintEnd_toStartOf="@+id/et_units"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iv_photo"
-                tools:text="150 calories"
                 tools:visibility="visible" />
 
-            <TextView
-                android:id="@+id/tv_default"
+            <EditText
+                android:id="@+id/et_units"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No ingredient selected"
-                android:textSize="34sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:hint="@string/hint_units"
+                android:inputType="number"
+                android:textSize="20sp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/et_grams"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@+id/et_grams"
+                app:layout_constraintTop_toTopOf="@+id/et_grams"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tv_time"
@@ -120,14 +151,65 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_calories"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/tv_calories"
-                app:layout_constraintTop_toTopOf="@+id/tv_calories"
+                app:layout_constraintStart_toEndOf="@+id/et_units"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_grams"
                 tools:text="10:10"
                 tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tv_grams"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/grams"
+                app:layout_constraintBottom_toBottomOf="@+id/et_grams"
+                app:layout_constraintEnd_toStartOf="@+id/et_grams"
+                app:layout_constraintTop_toTopOf="@+id/et_grams" />
+
+            <TextView
+                android:id="@+id/tv_units"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/units"
+                app:layout_constraintBottom_toBottomOf="@+id/et_units"
+                app:layout_constraintEnd_toStartOf="@+id/et_units"
+                app:layout_constraintTop_toTopOf="@+id/et_units" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/btn_default"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:backgroundTint="@color/primary_dark"
+        android:includeFontPadding="true"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="@string/default_search"
+        android:textSize="12sp"
+        app:cornerRadius="0dp"
+        app:iconPadding="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sv_ingredients" />
+
+    <Button
+        android:id="@+id/btn_custom"
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:backgroundTint="@color/primary_dark"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="@string/custom_search"
+        android:textSize="12sp"
+        app:cornerRadius="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_suggestions" />
 </androidx.constraintlayout.widget.ConstraintLayout>

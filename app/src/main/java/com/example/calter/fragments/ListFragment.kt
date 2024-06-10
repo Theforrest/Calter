@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -26,8 +25,6 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 
@@ -36,7 +33,7 @@ class ListFragment : Fragment() {
     private var listener: OnFragmentActionListener? = null
     private lateinit var binding: FragmentListBinding
 
-    private var adapter = IngredientAdapter(emptyList())
+    private var adapter = IngredientAdapter(emptyList()) { ingredient -> deleteIngredient(ingredient)}
 
     private lateinit var auth: FirebaseAuth
 
@@ -88,7 +85,11 @@ class ListFragment : Fragment() {
         binding.btnAdd.setOnClickListener {
             loadAddFragment()
         }
-        binding.tvDateList.setOnClickListener{
+        binding.btnDatepicker.setOnClickListener{
+
+            val delayMillis: Long = 900
+            it?.isClickable = false
+            it.postDelayed({ it.isClickable = true }, delayMillis)
             datePicker.show(parentFragmentManager, "datePicker")
 
         }
@@ -116,8 +117,11 @@ class ListFragment : Fragment() {
 
                 for (postSnapshot in snapshot.children) {
                     postSnapshot.getValue(Ingredient::class.java)
-                        ?.let { ingredientList.add(it) }
-
+                        ?.let {
+                            it.id = postSnapshot.key
+                            it.date = date
+                            ingredientList.add(it)
+                        }
                 }
                 val filteredIngredients = ingredientList.sortedBy { it.time}
                 loadIngredients(filteredIngredients)
@@ -146,14 +150,33 @@ class ListFragment : Fragment() {
         listener = null
     }
     private fun loadIngredients(ingredients: List<Ingredient>) {
-        if (ingredients.isNotEmpty()) {
-            lifecycleScope.launch (Dispatchers.IO) {
-                adapter.list = ingredients
 
-                withContext(Dispatchers.Main){
-                    adapter.notifyDataSetChanged()
-                }
+        if (ingredients.isNotEmpty()) {
+            binding.ivEmpty.visibility = View.INVISIBLE
+            binding.tvEmpty.visibility = View.INVISIBLE
+        } else {
+            binding.ivEmpty.visibility = View.VISIBLE
+            binding.tvEmpty.visibility = View.VISIBLE
+        }
+        lifecycleScope.launch (Dispatchers.IO) {
+            adapter.list = ingredients
+
+            withContext(Dispatchers.Main){
+                adapter.notifyDataSetChanged()
             }
+        }
+
+
+
+    }
+    private fun deleteIngredient(ingredient: Ingredient) {
+        val uid = auth.uid
+        uid?.let {
+            ingredient.id?.let { it1 -> ingredient.date?.let { it2 ->
+                reference.child(it).child("dates").child(
+                    it2
+                ).child(it1).removeValue()
+            } }
 
         }
 

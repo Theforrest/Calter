@@ -21,6 +21,9 @@ data class Ingredient(
     @SerializedName("nf_potassium") val potassium: Double? = -1.0,
     @SerializedName("nf_sodium") val sodium: Double? = -1.0,
     var time: String? = "",
+    var date: String? = "",
+    var id: String? = "",
+    var units: Double? = -1.0,
 
     @SerializedName("photo") val photo: Photo? = null,
     ): Serializable

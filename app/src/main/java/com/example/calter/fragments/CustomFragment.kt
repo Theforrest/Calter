@@ -124,7 +124,7 @@ class CustomFragment : Fragment() {
         binding.btnConfirm.setOnClickListener {
             createCustomIngredient()
         }
-        binding.ivPhoto.setOnClickListener {
+        binding.ibPhoto.setOnClickListener {
             selectImage()
         }
     }
@@ -137,7 +137,7 @@ class CustomFragment : Fragment() {
             val filePath = columnIndex?.let { cursor.getString(it) }
             val bitmap = BitmapFactory.decodeFile(filePath)
             imageBitmap = bitmap
-            binding.ivPhoto.setImageBitmap(bitmap)
+            binding.ibPhoto.setImageBitmap(bitmap)
         }
     }
     private fun selectImage() {

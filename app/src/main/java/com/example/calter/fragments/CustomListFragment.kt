@@ -1,20 +1,16 @@
 package com.example.calter.fragments
 
 import android.content.Context
-import android.icu.text.SimpleDateFormat
-import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.calter.adapters.IngredientAdapter
 import com.example.calter.databinding.FragmentCustomListBinding
-import com.example.calter.databinding.FragmentListBinding
 import com.example.calter.models.Ingredient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -24,12 +20,10 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 
 class CustomListFragment : Fragment() {
@@ -37,7 +31,7 @@ class CustomListFragment : Fragment() {
     private var listener: OnFragmentActionListener? = null
     private lateinit var binding: FragmentCustomListBinding
 
-    private var adapter = IngredientAdapter(emptyList())
+    private var adapter = IngredientAdapter(emptyList()) { ingredient -> deleteIngredient(ingredient)}
 
     private lateinit var auth: FirebaseAuth
 
@@ -97,9 +91,10 @@ class CustomListFragment : Fragment() {
                 val ingredientList: MutableList<Ingredient> = mutableListOf()
 
                 for (postSnapshot in snapshot.children) {
-
                     postSnapshot.getValue(Ingredient::class.java)
-                        ?.let { ingredientList.add(it) }
+                        ?.let {
+                            it.id = postSnapshot.key
+                            ingredientList.add(it) }
 
                 }
                 val filteredIngredients = ingredientList.sortedBy { it.time}
@@ -128,14 +123,32 @@ class CustomListFragment : Fragment() {
     }
     private fun loadIngredients(ingredients: List<Ingredient>) {
         if (ingredients.isNotEmpty()) {
-            lifecycleScope.launch (Dispatchers.IO) {
-                adapter.list = ingredients
+            binding.ivEmpty.visibility = View.INVISIBLE
+            binding.tvEmpty.visibility = View.INVISIBLE
+        } else {
+            binding.ivEmpty.visibility = View.VISIBLE
+            binding.tvEmpty.visibility = View.VISIBLE
+        }
+        lifecycleScope.launch (Dispatchers.IO) {
+            adapter.list = ingredients
 
-                withContext(Dispatchers.Main){
-                    adapter.notifyDataSetChanged()
+            withContext(Dispatchers.Main){
+                adapter.notifyDataSetChanged()
+            }
+        }
+    }
+    private fun deleteIngredient(ingredient: Ingredient) {
+        val uid = auth.uid
+        uid?.let {
+            Log.e("AAAAAAAAAA", ingredient.id ?: "")
+            ingredient.id?.let {
+                it1 -> reference.child(it).child("custom").child(it1).removeValue()
+                ingredient.photo?.thumb?.let { it2 ->
+                    FirebaseStorage.getInstance().getReferenceFromUrl(
+                        it2
+                    ).delete()
                 }
             }
-
         }
 
     }
