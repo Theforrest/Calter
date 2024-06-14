@@ -9,8 +9,17 @@ import androidx.fragment.app.DialogFragment
 import android.icu.util.Calendar
 import java.util.Locale
 
-class DatePickerFragment(private var onDateSelected: (String) -> Unit) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+/**
 
+ *
+ * @property onDateSelected
+ */
+class DatePickerFragment(private var onDateSelected: (String) -> Unit) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+    /**
+     *
+     * @param savedInstanceState
+     * @return
+     */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use the current date as the default date in the picker.
         val c = Calendar.getInstance()
@@ -22,6 +31,13 @@ class DatePickerFragment(private var onDateSelected: (String) -> Unit) : DialogF
         return DatePickerDialog(requireContext(), this, year, month, day)
     }
 
+    /**
+     *
+     * @param p0
+     * @param p1
+     * @param p2
+     * @param p3
+     */
     override fun onDateSet(p0: DatePicker?, p1: Int, p2: Int, p3: Int) {
         val cal = Calendar.getInstance()
         cal.set(Calendar.YEAR, p1)

@@ -4,10 +4,11 @@
     <string name="hint_password">Password…</string>
     <string name="register">REGISTER</string>
     <string name="login">LOG IN</string>
-    <string name="logoff">LOG OFF</string>
+    <string name="logoff">Log off</string>
     <string name="navigation_drawer_open">Drawer Open</string>
     <string name="navigation_drawer_close">Drawer Closed</string>
     <string name="confirm">CONFIRM</string>
+    <string name="back">BACK</string>
     <string name="no_ingredient_selected">No ingredient selected</string>
     <string name="hint_name">Name…</string>
     <string name="hint_calories">Calories…</string>
@@ -20,4 +21,30 @@
     <string name="custom_empty">Looks like there are no custom meals stored, press the + button to create a custom meal</string>
     <string name="default_search">Default %s</string>
     <string name="custom_search">Custom %s</string>
+    <string name="optional">Optional %s</string>
+    <string name="today">TODAY</string>
+    <string name="month">MONTH</string>
+    <string name="year">YEAR</string>
+    <string name="gram">%s grams</string>
+    <string name="calories">%.2f calories</string>
+    <string name="fat">%.2f fat</string>
+    <string name="saturated_fat">%.2f saturated fat</string>
+    <string name="cholesterol">%.2f cholesterol</string>
+    <string name="carbohydrates">%.2f carbohydrates</string>
+    <string name="fiber">%.2f fiber</string>
+    <string name="sugars">%.2f sugars</string>
+    <string name="protein">%.2f protein</string>
+    <string name="potassium">%.2f potassium</string>
+    <string name="sodium">%.2f sodium</string>
+    <string name="grams_hint">Grams…</string>
+    <string name="fat_hint">Fat…</string>
+    <string name="saturated_fat_hint">Saturated fat…</string>
+    <string name="cholesterol_hint">Cholesterol…</string>
+    <string name="carbohydrates_hint">Carbohydrates…</string>
+    <string name="fiber_hint">Fiber…</string>
+    <string name="sugars_hint">Sugars…</string>
+    <string name="protein_hint">Protein…</string>
+    <string name="potassium_hint">Potassium…</string>
+    <string name="sodium_hint">Sodium…</string>
+
 </resources>

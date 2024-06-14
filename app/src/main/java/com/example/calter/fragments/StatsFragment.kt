@@ -37,8 +37,11 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Locale
 
+/**
 
-class StatsFragment : Fragment() {
+ *
+ */
+class StatsFragment : OnFragmentBack() {
 
     private var listener: OnFragmentActionListener? = null
     private lateinit var binding: FragmentStatsBinding
@@ -57,7 +60,13 @@ class StatsFragment : Fragment() {
     private var textView: TextView? = null
     var ingredientList: MutableList<Ingredient> = mutableListOf()
 
-
+    /**
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -67,25 +76,32 @@ class StatsFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     *
+     * @param view
+     * @param savedInstanceState
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         auth = Firebase.auth
         initDb()
         setListeners()
-        if (checkPermission()) {
-            Toast.makeText(context, "ajaja", Toast.LENGTH_LONG).show()
-        } else {
-            Toast.makeText(context, "jujuju", Toast.LENGTH_LONG).show()
 
-        }
     }
 
+    /**
+     *
+     */
     private fun initDb() {
         database = FirebaseDatabase.getInstance("https://calter-default-rtdb.europe-west1.firebasedatabase.app/")
         reference = database.getReference("users")
     }
 
+    /**
+     *
+     * @param date
+     */
     private fun setDate(date: String) {
         textView?.let { it.text = date }
         startDate = binding.tvDateList2.text.toString()
@@ -96,6 +112,10 @@ class StatsFragment : Fragment() {
         }
 
     }
+
+    /**
+     *
+     */
     private fun setListeners() {
 
         binding.btnDatepickerStart.setOnClickListener{
@@ -178,12 +198,20 @@ class StatsFragment : Fragment() {
 
     }
 
+    /**
+     *
+     * @return
+     */
     private fun getCurrentDate():String {
         val time = Calendar.getInstance().time
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return formatter.format(time)
     }
 
+    /**
+     *
+     * @param uid
+     */
     private fun setReferenceListener(uid:String) {
         referenceListener?.let { reference.child(uid).child("dates").removeEventListener(it) }
         referenceListener = reference.child(uid).child("dates").addValueEventListener(object : ValueEventListener {
@@ -213,15 +241,35 @@ class StatsFragment : Fragment() {
         })
     }
 
+    /**
+     *
+     */
+    override fun onBackPressed() {
+        listener?.openDrawer()
+    }
+
+    /**
+     *
+     * @param context
+     */
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnFragmentActionListener) listener=context
     }
 
+    /**
+     *
+     */
     override fun onDetach() {
         super.onDetach()
         listener = null
     }
+
+    /**
+     *
+     * @param double
+     * @return
+     */
     private fun correctDouble(double: Double?): Double {
         if (double != null && double != -1.0) {
             return double
@@ -229,7 +277,9 @@ class StatsFragment : Fragment() {
         return 0.0
     }
 
-
+    /**
+     *
+     */
     private fun loadStats() {
         var calories = 0.0
         var carbohydrates = 0.0
@@ -257,19 +307,22 @@ class StatsFragment : Fragment() {
              sugars += correctDouble(it.sugars)
         }
 
-        binding.tvCalories.text = calories.toString()
-        binding.tvCarbohydrates.text = carbohydrates.toString()
-        binding.tvCholesterol.text = cholesterol.toString()
-        binding.tvFat.text = fat.toString()
-        binding.tvFiber.text = fiber.toString()
-        binding.tvPotassium.text = potassium.toString()
-        binding.tvProtein.text = protein.toString()
-        binding.tvSaturatedFat.text = saturatedFat.toString()
-        binding.tvSodium.text = sodium.toString()
-        binding.tvSugar.text = sugars.toString()
+        binding.tvCalories.text = String.format(Locale.US, getString(R.string.calories), calories)
+        binding.tvCarbohydrates.text = String.format(Locale.US, getString(R.string.carbohydrates), carbohydrates)
+        binding.tvCholesterol.text = String.format(Locale.US, getString(R.string.cholesterol), cholesterol)
+        binding.tvFat.text = String.format(Locale.US, getString(R.string.fat), fat)
+        binding.tvFiber.text = String.format(Locale.US, getString(R.string.fiber), fiber)
+        binding.tvPotassium.text = String.format(Locale.US, getString(R.string.potassium), potassium)
+        binding.tvProtein.text = String.format(Locale.US, getString(R.string.protein), protein)
+        binding.tvSaturatedFat.text = String.format(Locale.US, getString(R.string.saturated_fat), saturatedFat)
+        binding.tvSodium.text = String.format(Locale.US, getString(R.string.sodium), sodium)
+        binding.tvSugar.text = String.format(Locale.US, getString(R.string.sugars), sugars)
 
     }
 
+    /**
+     *
+     */
     private fun generatePdf() {
         val pdfDocument = PdfDocument()
         val pageHeight = 1120
@@ -304,13 +357,5 @@ class StatsFragment : Fragment() {
 
         pdfDocument.close()
     }
-    private fun checkPermission(): Boolean {
-        // checking of permissions.
-        val permission1 =
-            context?.let { ContextCompat.checkSelfPermission(it,
-                Manifest.permission.MANAGE_EXTERNAL_STORAGE
-            ) }
 
-        return permission1 == PackageManager.PERMISSION_GRANTED
-    }
 }

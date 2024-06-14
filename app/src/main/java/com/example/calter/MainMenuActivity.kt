@@ -21,6 +21,7 @@ import com.example.calter.databinding.ActivityMainMenuBinding
 import com.example.calter.fragments.CustomListFragment
 import com.example.calter.fragments.ListFragment
 import com.example.calter.fragments.OnFragmentActionListener
+import com.example.calter.fragments.OnFragmentBack
 import com.example.calter.fragments.StatsFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -32,7 +33,10 @@ class MainMenuActivity : AppCompatActivity(), OnFragmentActionListener, Navigati
     private lateinit var binding: ActivityMainMenuBinding
     private lateinit var auth: FirebaseAuth
 
-
+    /**
+     *
+     * @param savedInstanceState
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainMenuBinding.inflate(layoutInflater)
@@ -41,6 +45,7 @@ class MainMenuActivity : AppCompatActivity(), OnFragmentActionListener, Navigati
         auth = Firebase.auth
 
         setSupportActionBar(binding.mtMainMenu)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         val toggle = ActionBarDrawerToggle(
             this,
             binding.dlMainMenu,
@@ -54,6 +59,13 @@ class MainMenuActivity : AppCompatActivity(), OnFragmentActionListener, Navigati
         onBackPressedDispatcher.addCallback {
             if (binding.dlMainMenu.isDrawerOpen(GravityCompat.START)) {
                 binding.dlMainMenu.closeDrawer(GravityCompat.START)
+            } else {
+                val fragment = binding.fcvMain.getFragment<Fragment>()
+                fragment.let {
+                    if (it is OnFragmentBack) {
+                        it.onBackPressed()
+                    }
+                }
             }
         }
         binding.nvMainMenu.setNavigationItemSelectedListener(this)
@@ -68,6 +80,11 @@ class MainMenuActivity : AppCompatActivity(), OnFragmentActionListener, Navigati
 
     }
 
+    /**
+     *
+     * @param item
+     * @return
+     */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         for (i in 0..<binding.nvMainMenu.menu.size()) {
             binding.nvMainMenu.menu.getItem(i).setChecked(false)
@@ -96,6 +113,11 @@ class MainMenuActivity : AppCompatActivity(), OnFragmentActionListener, Navigati
         return true
     }
 
+    /**
+     *
+     * @param fragment
+     * @param bundle
+     */
     override fun loadFragment(fragment: Fragment, bundle: Bundle?) {
         binding.fcvMain.removeAllViews()
 
@@ -107,6 +129,13 @@ class MainMenuActivity : AppCompatActivity(), OnFragmentActionListener, Navigati
             setReorderingAllowed(true)
             replace(binding.fcvMain.id, fragment)
         }
+    }
+
+    /**
+     *
+     */
+    override fun openDrawer() {
+        binding.dlMainMenu.openDrawer(GravityCompat.START)
     }
 
 }

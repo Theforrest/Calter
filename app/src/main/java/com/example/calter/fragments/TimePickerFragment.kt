@@ -18,9 +18,17 @@ import android.text.format.DateFormat;
 import android.util.Log
 import android.widget.TimePicker
 
+/**
 
+ *
+ * @property onTimeSelected
+ */
 class TimePickerFragment(private var onTimeSelected: (String) -> Unit) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
-
+    /**
+     *
+     * @param savedInstanceState
+     * @return
+     */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use the current date as the default date in the picker.
         val c = Calendar.getInstance()
@@ -30,6 +38,12 @@ class TimePickerFragment(private var onTimeSelected: (String) -> Unit) : DialogF
         return TimePickerDialog(requireContext(), this, hour, minute, DateFormat.is24HourFormat(activity))
     }
 
+    /**
+     *
+     * @param p0
+     * @param p1
+     * @param p2
+     */
     override fun onTimeSet(p0: TimePicker?, p1: Int, p2: Int) {
         val cal = Calendar.getInstance()
         cal.set(Calendar.HOUR_OF_DAY, p1)

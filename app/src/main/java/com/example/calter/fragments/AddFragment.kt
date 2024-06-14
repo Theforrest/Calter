@@ -1,5 +1,6 @@
 package com.example.calter.fragments
 
+import android.app.AlertDialog
 import android.content.Context
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
@@ -12,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
@@ -43,7 +45,7 @@ import kotlinx.coroutines.withContext
 import java.util.Locale
 
 
-class AddFragment : Fragment() {
+class AddFragment : OnFragmentBack() {
 
     private lateinit var binding: FragmentAddBinding
 
@@ -55,6 +57,8 @@ class AddFragment : Fragment() {
     private lateinit var database: FirebaseDatabase
     private lateinit var reference: DatabaseReference
 
+    private var listener: OnFragmentActionListener? = null
+
     private var date = ""
     private var time = ""
 
@@ -62,11 +66,19 @@ class AddFragment : Fragment() {
 
     private var ingredient: Ingredient? = null
     private var grams: Double = 0.0
+    private var totalGrams: Double = 0.0
     private var units: Double = 0.0
     private var ingredientsCustom: List<Ingredient> = emptyList()
 
     private var timePicker = TimePickerFragment {time -> setTime(time) }
 
+    /**
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -76,6 +88,11 @@ class AddFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     *
+     * @param view
+     * @param savedInstanceState
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         auth = Firebase.auth
@@ -90,17 +107,28 @@ class AddFragment : Fragment() {
         binding.btnCustom.text = String.format(Locale.US, getString(R.string.custom_search), "↑")
 
     }
+
+    /**
+     *
+     */
     private fun recoverData() {
         val bundle: Bundle? = arguments
         if (bundle!=null) {
             date = bundle.getString("DATE").toString()
         }
     }
+
+    /**
+     *
+     */
     private fun initDb() {
         database = FirebaseDatabase.getInstance("https://calter-default-rtdb.europe-west1.firebasedatabase.app/")
         reference = database.getReference("users")
     }
 
+    /**
+     *
+     */
     private fun setRecycler() {
         binding.rvSuggestions.layoutManager = GridLayoutManager(context, 1)
         binding.rvSuggestions.adapter = adapter
@@ -108,6 +136,9 @@ class AddFragment : Fragment() {
         binding.rvSuggestionsCustom.adapter = adapterCustom
     }
 
+    /**
+     *
+     */
     private fun setListeners() {
         binding.btnConfirm.setOnClickListener {
             addIngredient()
@@ -153,20 +184,17 @@ class AddFragment : Fragment() {
             })
 
         }
+
         binding.etGrams.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                binding.rvSuggestions.visibility = View.GONE
-                binding.btnDefault.text = String.format(Locale.US, getString(R.string.default_search), "↑")
-                binding.rvSuggestionsCustom.visibility = View.GONE
-                binding.btnCustom.text = String.format(Locale.US, getString(R.string.custom_search), "↑")
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {            }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 if (s.toString().trim().isNotEmpty() && s.toString().trim() != ".") {
                     val calculatedUnits = s.toString().trim().toDouble() / grams
                     if (calculatedUnits != units) {
-                        units = calculatedUnits
-                        binding.etUnits.setText(String.format(Locale.US,"%.2f", calculatedUnits))
+                            units = calculatedUnits
+                            binding.etUnits.setText(String.format(Locale.US,"%.2f", calculatedUnits))
+
                     }
                 } else {
                     binding.etUnits.setText("0")
@@ -174,6 +202,33 @@ class AddFragment : Fragment() {
                 }
             }
         })
+
+        binding.etUnits.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (s.toString().trim().isNotEmpty() && s.toString().trim() != ".") {
+                    val calculatedGrams = s.toString().trim().toDouble() * grams
+                    Log.e("AAAAAAAAAAAUnits", calculatedGrams.toString())
+                    Log.e("AAAAAAAAAAAUnits", grams.toString())
+                    if (calculatedGrams != totalGrams) {
+                            totalGrams = calculatedGrams
+                            binding.etGrams.setText(
+                                String.format(
+                                    Locale.US,
+                                    "%.2f",
+                                    calculatedGrams
+                                )
+                            )
+
+                    }
+                } else {
+                    binding.etGrams.setText("0")
+
+                }
+            }
+        })
+
         binding.btnDefault.setOnClickListener {
             if (binding.rvSuggestions.visibility == View.VISIBLE) {
                 binding.rvSuggestions.visibility = View.GONE
@@ -192,13 +247,66 @@ class AddFragment : Fragment() {
                 binding.btnCustom.text = String.format(Locale.US, getString(R.string.custom_search), "↓")
             }
         }
+        binding.btnInfo.setOnClickListener {
+            ingredient?.let {
+                val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+                builder
+                    .setTitle(it.name)
+                    .setItems(getInfo(it)) { _, _ ->
+                    }
+
+                val dialog: AlertDialog = builder.create()
+                dialog.show()
+            }
+
+        }
     }
 
+    /**
+     *
+     * @param ingredient
+     * @return
+     */
+    private fun getInfo(ingredient: Ingredient): Array<String> {
+        val info: MutableList<String> = mutableListOf()
+        checkValue(info, ingredient.calories, getString(R.string.calories))
+        checkValue(info, ingredient.fat, getString(R.string.fat))
+        checkValue(info, ingredient.saturatedFat, getString(R.string.saturated_fat))
+        checkValue(info, ingredient.cholesterol, getString(R.string.cholesterol))
+        checkValue(info, ingredient.carbohydrates, getString(R.string.carbohydrates))
+        checkValue(info, ingredient.fiber, getString(R.string.fiber))
+        checkValue(info, ingredient.sugars, getString(R.string.sugars))
+        checkValue(info, ingredient.protein, getString(R.string.protein))
+        checkValue(info, ingredient.potassium, getString(R.string.potassium))
+        checkValue(info, ingredient.sodium, getString(R.string.sodium))
+
+        return info.toTypedArray()
+    }
+
+    /**
+     *
+     * @param list
+     * @param number
+     * @param format
+     */
+    private fun checkValue(list: MutableList<String>,number: Double?, format: String) {
+        if (number != null && number > 0) {
+            list.add(String.format(Locale.US, format, number))
+        }
+    }
+
+    /**
+     *
+     * @param time
+     */
     private fun setTime(time: String) {
         binding.tvTime.text = time
         this.time = time
     }
 
+    /**
+     *
+     */
     private fun addIngredient() {
         if (ingredient != null) {
             auth.uid?.let {uid ->
@@ -218,6 +326,7 @@ class AddFragment : Fragment() {
                 reference.child(uid).child("dates").child(result).push().setValue(ingredient)
                     .addOnSuccessListener {
                         Toast.makeText(this.context, "Saved Succesfully", Toast.LENGTH_LONG).show()
+                        backToList()
                     }
                     .addOnFailureListener() {
                         Toast.makeText(this.context, "Error Saving", Toast.LENGTH_LONG).show()
@@ -227,6 +336,10 @@ class AddFragment : Fragment() {
 
     }
 
+    /**
+     *
+     * @param search
+     */
     fun searchDebounced(search: String) {
         searchJob?.cancel()
 
@@ -236,6 +349,11 @@ class AddFragment : Fragment() {
             loadCustomSuggestions(search)
         }
     }
+
+    /**
+     *
+     * @param search
+     */
     private fun loadSuggestions(search: String) {
         if (search.isNotBlank()) {
             lifecycleScope.launch (Dispatchers.IO) {
@@ -249,6 +367,11 @@ class AddFragment : Fragment() {
         }
 
     }
+
+    /**
+     *
+     * @param search
+     */
     private fun loadCustomSuggestions(search: String) {
         if (search.isNotBlank()) {
             val tempList: MutableList<IngredientSuggestion> = mutableListOf()
@@ -270,6 +393,11 @@ class AddFragment : Fragment() {
         }
 
     }
+
+    /**
+     *
+     * @param ingredientName
+     */
     private fun loadCardView(ingredientName: String) {
         if (binding.svIngredients.query.trim().isNotEmpty()) {
             lifecycleScope.launch (Dispatchers.IO) {
@@ -279,10 +407,14 @@ class AddFragment : Fragment() {
                     binding.tvDefault.visibility = View.INVISIBLE
                     binding.cvIngredient.visibility = View.VISIBLE
 
+                    binding.rvSuggestionsCustom.visibility = View.GONE
+                    binding.btnCustom.text = String.format(Locale.US, getString(R.string.custom_search), "↑")
+                    binding.rvSuggestions.visibility = View.GONE
+                    binding.btnDefault.text = String.format(Locale.US, getString(R.string.default_search), "↑")
+
                     ingredient = results.ingredients[0]
                     binding.tvIngredientName.text= results.ingredients[0].name?.uppercase()
-                    binding.etGrams.setText(results.ingredients[0].calories.toString())
-                    grams = results.ingredients[0].calories ?: 0.0
+                    grams = results.ingredients[0].grams ?: 0.0
                     binding.etUnits.setText("1")
                     units = 1.0
                     if (!results.ingredients[0].photo?.highres.isNullOrEmpty()) {
@@ -298,6 +430,11 @@ class AddFragment : Fragment() {
             }
         }
     }
+
+    /**
+     *
+     * @param ingredientName
+     */
     private fun loadCardViewCustom(ingredientName: String) {
         if (binding.svIngredients.query.trim().isNotEmpty()) {
             val ingredient = ingredientsCustom.find { it.name == ingredientName }
@@ -305,11 +442,15 @@ class AddFragment : Fragment() {
                 binding.tvDefault.visibility = View.INVISIBLE
                 binding.cvIngredient.visibility = View.VISIBLE
 
+                binding.rvSuggestionsCustom.visibility = View.GONE
+                binding.btnCustom.text = String.format(Locale.US, getString(R.string.custom_search), "↑")
+                binding.rvSuggestions.visibility = View.GONE
+                binding.btnDefault.text = String.format(Locale.US, getString(R.string.default_search), "↑")
+
                 this.ingredient = ingredient
 
                 binding.tvIngredientName.text= ingredient.name?.uppercase()
-                binding.etGrams.setText(ingredient.calories.toString())
-                grams = ingredient.calories ?: 0.0
+                grams = ingredient.grams ?: 0.0
                 binding.etUnits.setText("1")
                 units = 1.0
                 if (!ingredient.photo?.highres.isNullOrEmpty()) {
@@ -324,5 +465,41 @@ class AddFragment : Fragment() {
             }
 
         }
+    }
+
+    /**
+     *
+     */
+    private fun backToList() {
+
+        val bundle = Bundle().apply {
+            putString("DATE", date)
+        }
+        listener?.loadFragment(ListFragment(),bundle)
+
+    }
+
+    /**
+     *
+     */
+    override fun onBackPressed() {
+        backToList()
+    }
+
+    /**
+     *
+     * @param context
+     */
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnFragmentActionListener) listener=context
+    }
+
+    /**
+     *
+     */
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
     }
 }

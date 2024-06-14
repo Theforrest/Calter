@@ -16,7 +16,12 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
+/**
+
+ *
+ */
 class MainActivity : AppCompatActivity() {
+
     private var responseLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         if(it.resultCode== RESULT_OK){
             val task= GoogleSignIn.getSignedInAccountFromIntent(it.data)
@@ -43,6 +48,11 @@ class MainActivity : AppCompatActivity() {
 
 
     private lateinit var auth: FirebaseAuth
+
+    /**
+     *
+     * @param savedInstanceState
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -52,6 +62,9 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
+    /**
+     *
+     */
     override fun onStart() {
         super.onStart()
         val user = auth.currentUser
@@ -61,6 +74,9 @@ class MainActivity : AppCompatActivity() {
         resetFields()
     }
 
+    /**
+     *
+     */
     private fun resetFields() {
         email=""
         password=""
@@ -68,6 +84,9 @@ class MainActivity : AppCompatActivity() {
         binding.etPassword.setText(password)
     }
 
+    /**
+     *
+     */
     private fun setListener() {
         binding.btnRegistrar.setOnClickListener {
             if(checkFields()){
@@ -84,6 +103,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     *
+     */
     private fun loginGoogle() {
         val googleConf= GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.google_id)).requestEmail().build()
         val googleClient= GoogleSignIn.getClient(this,googleConf)
@@ -93,6 +115,9 @@ class MainActivity : AppCompatActivity() {
         responseLauncher.launch(googleClient.signInIntent)
     }
 
+    /**
+     *
+     */
     private fun basicLogin() {
         auth.signInWithEmailAndPassword(email,password).addOnCompleteListener{
             if(it.isSuccessful){
@@ -103,10 +128,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     *
+     */
     private fun goMainMenuActivity() {
         startActivity(Intent(this,MainMenuActivity::class.java))
     }
 
+    /**
+     *
+     * @return
+     */
     private fun checkFields(): Boolean {
         email=binding.etEmail.text.toString().trim()
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
@@ -121,6 +153,9 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    /**
+     *
+     */
     private fun basicRegistration() {
         auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener{
             if(it.isSuccessful){

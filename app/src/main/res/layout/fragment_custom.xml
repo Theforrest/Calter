@@ -8,24 +8,45 @@
     tools:context=".fragments.CustomFragment">
 
 
+        <Button
+            android:id="@+id/btn_optional"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:backgroundTint="@color/gray"
+            android:includeFontPadding="true"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/optional"
+            android:textColor="@color/dark_purple"
+            android:textSize="12sp"
+            app:cornerRadius="0dp"
+            app:iconPadding="0dp"
+            app:layout_constraintEnd_toEndOf="@+id/ib_photo"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/ib_photo"
+            app:layout_constraintTop_toBottomOf="@+id/et_calories" />
+
         <EditText
             android:id="@+id/et_name_ingredient"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/hint_name"
             android:textAlignment="center"
-            android:textSize="26sp"
+            android:textColor="@color/dark_purple"
+            android:textColorHint="@color/light_pink"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/ib_photo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/ib_photo"
+            app:layout_constraintStart_toStartOf="@+id/ib_photo"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/ib_photo"
             android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
+            android:backgroundTint="@color/gray"
             android:scaleType="fitXY"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/et_calories"
@@ -36,37 +57,185 @@
 
         <EditText
             android:id="@+id/et_calories"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="40dp"
             android:ems="10"
             android:hint="@string/hint_calories"
             android:inputType="number"
+            android:textColor="@color/dark_purple"
+            android:textColorHint="@color/light_pink"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/et_grams"
+            app:layout_constraintTop_toBottomOf="@+id/ib_photo" />
+
+        <EditText
+            android:id="@+id/et_grams"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="5dp"
+            android:ems="10"
+            android:hint="@string/grams_hint"
+            android:inputType="number"
+            android:textColor="@color/dark_purple"
+            android:textColorHint="@color/light_pink"
+            app:layout_constraintEnd_toStartOf="@+id/et_calories"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ib_photo" />
 
-        <ExpandableListView
-            android:id="@+id/expandableListViewSample"
+        <Button
+            android:id="@+id/btn_confirm"
             android:layout_width="0dp"
-            android:layout_height="250dp"
-            android:divider="@android:color/darker_gray"
-            android:dividerHeight="0.5dp"
-            android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/gray_light"
+            android:text="@string/confirm"
+            android:textColor="@color/dark_purple"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@id/btn_back"/>
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/gray_light"
+            android:text="@string/back"
+            android:textColor="@color/dark_purple"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_confirm"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/g_edittext"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            app:constraint_referenced_ids="et_saturated_fat,et_cholesterol,et_carbohydrates,et_fiber,et_sugars,et_protein,et_potassium,et_sodium,et_fat"
             app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_calories" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_optional"
+            tools:visibility="invisible" />
 
-        <Button
-            android:id="@+id/btn_confirm"
+        <EditText
+            android:id="@+id/et_saturated_fat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/confirm"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:ems="10"
+            android:hint="@string/saturated_fat_hint"
+            android:inputType="number"
+            android:textColor="@color/dark_purple"
+            android:textColorHint="@color/light_pink"
+            app:layout_constraintEnd_toEndOf="@+id/g_edittext"
+            app:layout_constraintStart_toStartOf="@+id/g_edittext"
+            app:layout_constraintTop_toBottomOf="@+id/et_fat" />
+
+        <EditText
+            android:id="@+id/et_cholesterol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/cholesterol_hint"
+            android:inputType="number"
+            android:textColor="@color/dark_purple"
+            android:textColorHint="@color/light_pink"
+            app:layout_constraintEnd_toEndOf="@+id/g_edittext"
+            app:layout_constraintStart_toStartOf="@+id/g_edittext"
+            app:layout_constraintTop_toBottomOf="@+id/et_saturated_fat" />
+
+        <EditText
+            android:id="@+id/et_carbohydrates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/carbohydrates_hint"
+            android:inputType="number"
+            android:textColor="@color/dark_purple"
+            android:textColorHint="@color/light_pink"
+            app:layout_constraintEnd_toEndOf="@+id/g_edittext"
+            app:layout_constraintStart_toStartOf="@+id/g_edittext"
+            app:layout_constraintTop_toBottomOf="@+id/et_cholesterol" />
+
+        <EditText
+            android:id="@+id/et_fiber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/fiber_hint"
+            android:inputType="number"
+            android:textColor="@color/dark_purple"
+            android:textColorHint="@color/light_pink"
+            app:layout_constraintEnd_toEndOf="@+id/g_edittext"
+            app:layout_constraintStart_toStartOf="@+id/g_edittext"
+            app:layout_constraintTop_toBottomOf="@+id/et_carbohydrates" />
+
+        <EditText
+            android:id="@+id/et_sugars"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/sugars_hint"
+            android:inputType="number"
+            android:textColor="@color/dark_purple"
+            android:textColorHint="@color/light_pink"
+            app:layout_constraintEnd_toEndOf="@+id/g_edittext"
+            app:layout_constraintStart_toStartOf="@+id/g_edittext"
+            app:layout_constraintTop_toBottomOf="@+id/et_fiber" />
+
+        <EditText
+            android:id="@+id/et_protein"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/protein_hint"
+            android:inputType="number"
+            android:textColor="@color/dark_purple"
+            android:textColorHint="@color/light_pink"
+            app:layout_constraintEnd_toEndOf="@+id/g_edittext"
+            app:layout_constraintStart_toStartOf="@+id/g_edittext"
+            app:layout_constraintTop_toBottomOf="@+id/et_sugars" />
+
+        <EditText
+            android:id="@+id/et_potassium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/potassium_hint"
+            android:inputType="number"
+            android:textColor="@color/dark_purple"
+            android:textColorHint="@color/light_pink"
+            app:layout_constraintEnd_toEndOf="@+id/g_edittext"
+            app:layout_constraintStart_toStartOf="@+id/g_edittext"
+            app:layout_constraintTop_toBottomOf="@+id/et_protein" />
+
+        <EditText
+            android:id="@+id/et_sodium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/sodium_hint"
+            android:inputType="number"
+            android:textColor="@color/dark_purple"
+            android:textColorHint="@color/light_pink"
+            app:layout_constraintEnd_toEndOf="@+id/g_edittext"
+            app:layout_constraintStart_toStartOf="@+id/g_edittext"
+            app:layout_constraintTop_toBottomOf="@+id/et_potassium" />
+
+        <EditText
+            android:id="@+id/et_fat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/fat_hint"
+            android:inputType="number"
+            android:textColor="@color/dark_purple"
+            android:textColorHint="@color/light_pink"
+            app:layout_constraintEnd_toEndOf="@+id/g_edittext"
+            app:layout_constraintStart_toStartOf="@+id/g_edittext"
+            app:layout_constraintTop_toTopOf="@+id/g_edittext" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 

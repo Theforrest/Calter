@@ -25,7 +25,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:src="@drawable/plus"
-        app:backgroundTint="@color/primary_dark"
+        app:backgroundTint="@color/gray_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -43,6 +43,7 @@
         android:id="@+id/btn_datepicker"
         android:layout_width="50dp"
         android:layout_height="0dp"
+        android:backgroundTint="@color/gray"
         android:scaleType="fitXY"
         android:src="@drawable/calendar_lines_pen"
         app:layout_constraintBottom_toBottomOf="@+id/tv_date_list"

@@ -25,8 +25,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
-class CustomListFragment : Fragment() {
+/**
+ *
+ */
+class CustomListFragment : OnFragmentBack() {
 
     private var listener: OnFragmentActionListener? = null
     private lateinit var binding: FragmentCustomListBinding
@@ -39,6 +41,13 @@ class CustomListFragment : Fragment() {
     private lateinit var reference: DatabaseReference
     private var referenceListener: ValueEventListener? = null
 
+    /**
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,6 +57,11 @@ class CustomListFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     *
+     * @param view
+     * @param savedInstanceState
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -57,17 +71,26 @@ class CustomListFragment : Fragment() {
         setListeners()
     }
 
+    /**
+     *
+     */
     private fun initDb() {
         database = FirebaseDatabase.getInstance("https://calter-default-rtdb.europe-west1.firebasedatabase.app/")
         reference = database.getReference("users")
     }
+
+    /**
+     *
+     */
     private fun setRecycler() {
         val layoutManager = GridLayoutManager(this.context, 1)
         binding.rvIngredientListCustom.layoutManager = layoutManager
         binding.rvIngredientListCustom.adapter = adapter
     }
 
-
+    /**
+     *
+     */
     private fun setListeners() {
         binding.btnAddCustom.setOnClickListener {
             loadAddCustomFragment()
@@ -82,7 +105,10 @@ class CustomListFragment : Fragment() {
 
     }
 
-
+    /**
+     *
+     * @param uid
+     */
     private fun setReferenceListener(uid:String) {
 
         referenceListener = reference.child(uid).child("custom").addValueEventListener(object : ValueEventListener {
@@ -107,20 +133,42 @@ class CustomListFragment : Fragment() {
         })
     }
 
+    /**
+     *
+     */
     private fun loadAddCustomFragment() {
 
         listener?.loadFragment(CustomFragment(),null)
     }
 
+    /**
+     *
+     */
+    override fun onBackPressed() {
+        listener?.openDrawer()
+    }
+
+    /**
+     *
+     * @param context
+     */
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnFragmentActionListener) listener=context
     }
 
+    /**
+     *
+     */
     override fun onDetach() {
         super.onDetach()
         listener = null
     }
+
+    /**
+     *
+     * @param ingredients
+     */
     private fun loadIngredients(ingredients: List<Ingredient>) {
         if (ingredients.isNotEmpty()) {
             binding.ivEmpty.visibility = View.INVISIBLE
@@ -137,6 +185,11 @@ class CustomListFragment : Fragment() {
             }
         }
     }
+
+    /**
+     *
+     * @param ingredient
+     */
     private fun deleteIngredient(ingredient: Ingredient) {
         val uid = auth.uid
         uid?.let {

@@ -3,11 +3,11 @@
     <style name="Base.Theme.Calter" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
         <item name="drawerArrowStyle">@style/Base.Theme.Calter.DrawerArrowStyle</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-
+        <item name="android:statusBarColor">@color/gray_dark</item>
+        <item name="colorControlNormal">@color/primary_dark</item>
     </style>
+
     <style name="Base.Theme.Calter.DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="color">@color/white</item>
     </style>

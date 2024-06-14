@@ -11,6 +11,7 @@
         android:id="@+id/rv_suggestions"
         android:layout_width="0dp"
         android:layout_height="100dp"
+        android:background="@color/gray_dark"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -21,6 +22,7 @@
         android:id="@+id/rv_suggestions_custom"
         android:layout_width="0dp"
         android:layout_height="100dp"
+        android:background="@color/gray_dark"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -32,11 +34,23 @@
         android:id="@+id/btn_confirm"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/gray_light"
         android:text="@string/confirm"
+        android:textColor="@color/dark_purple"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_back" />
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/gray_light"
+        android:text="@string/back"
+        android:textColor="@color/dark_purple"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_confirm"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
-
     <TextView
         android:id="@+id/tv_default"
         android:layout_width="wrap_content"
@@ -54,7 +68,8 @@
         android:id="@+id/sv_ingredients"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/light_pink"
+        android:background="@color/gray_light"
+        android:foregroundTint="@color/light_pink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -68,6 +83,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:visibility="gone"
+        app:cardBackgroundColor="@color/gray_dark"
         app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -81,8 +97,9 @@
 
             <ImageButton
                 android:id="@+id/btn_timepicker"
-                android:layout_width="30dp"
-                android:layout_height="0dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/gray"
                 android:scaleType="fitXY"
                 android:src="@drawable/time"
                 android:visibility="visible"
@@ -123,6 +140,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_grams"
                 android:inputType="number"
+                android:textColor="@color/dark_purple"
+                android:textColorHint="@color/light_pink"
                 android:textSize="20sp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toTopOf="@+id/tv_time"
@@ -137,6 +156,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_units"
                 android:inputType="number"
+                android:textColor="@color/dark_purple"
+                android:textColorHint="@color/light_pink"
                 android:textSize="20sp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/et_grams"
@@ -178,6 +199,21 @@
                 app:layout_constraintBottom_toBottomOf="@+id/et_units"
                 app:layout_constraintEnd_toStartOf="@+id/et_units"
                 app:layout_constraintTop_toTopOf="@+id/et_units" />
+
+            <Button
+                android:id="@+id/btn_info"
+                android:layout_width="35dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:backgroundTint="@color/gray_light"
+                app:icon="@android:drawable/ic_menu_info_details"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="34dp"
+                app:iconTint="@color/dark_purple"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/iv_photo"
+                app:layout_constraintTop_toBottomOf="@+id/tv_ingredient_name" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -185,16 +221,17 @@
         android:id="@+id/btn_default"
         android:layout_width="0dp"
         android:layout_height="35dp"
-        android:backgroundTint="@color/primary_dark"
+        android:backgroundTint="@color/gray"
         android:includeFontPadding="true"
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:text="@string/default_search"
+        android:textColor="@color/dark_purple"
         android:textSize="12sp"
         app:cornerRadius="0dp"
         app:iconPadding="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sv_ingredients" />
 
@@ -202,10 +239,11 @@
         android:id="@+id/btn_custom"
         android:layout_width="0dp"
         android:layout_height="35dp"
-        android:backgroundTint="@color/primary_dark"
+        android:backgroundTint="@color/gray"
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:text="@string/custom_search"
+        android:textColor="@color/dark_purple"
         android:textSize="12sp"
         app:cornerRadius="0dp"
         app:layout_constraintEnd_toEndOf="parent"
